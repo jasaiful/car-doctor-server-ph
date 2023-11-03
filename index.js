@@ -1,23 +1,26 @@
+require('dotenv').config()
 const express = require('express');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const port = process.env.PORT || 5000;
+
+const app = express();
 const cors = require('cors');
+
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-require('dotenv').config()
-const app = express();
-const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+        // 'http://localhost:5173', 'http://localhost:5174'
+        'https://cars-doctor-6e204.web.app/',
+        'https://cars-doctor-6e204.firebaseapp.com'
+    ],
     credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
-
-
-console.log(process.env.DB_PASS)
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.imeoc20.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -58,7 +61,7 @@ const verifyToken = (req, res, next) => {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const serviceCollection = client.db('carDoctor').collection('services');
         const bookingCollection = client.db('carDoctor').collection('bookings');
